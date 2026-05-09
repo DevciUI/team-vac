@@ -2,11 +2,14 @@ const canvas = document.querySelector("#scene");
 const ctx = canvas.getContext("2d");
 const queryForm = document.querySelector("#queryForm");
 const queryInput = document.querySelector("#queryInput");
+const langButtons = document.querySelectorAll("[data-lang]");
+const i18nNodes = document.querySelectorAll("[data-i18n]");
 const startGate = document.querySelector("#startGate");
 const startButton = document.querySelector("#startButton");
 const boot = document.querySelector("#boot");
 const bootFill = document.querySelector("#bootFill");
 const denied = document.querySelector("#denied");
+const wishlistButton = document.querySelector("#wishlistButton");
 const gallery = document.querySelector("#gallery");
 const closeGalleryButton = document.querySelector("#closeGallery");
 
@@ -16,6 +19,7 @@ const MUTED = "#81868c";
 const RED = "#e9162f";
 const RED_DIM = "#6e0b17";
 const FOCAL = 680;
+const STEAM_URL = "https://store.steampowered.com/app/3864580/PON/";
 
 let width = innerWidth;
 let height = innerHeight;
@@ -35,11 +39,49 @@ let hintStart = 0;
 let lastTime = performance.now();
 let bgPhase = 0;
 let audioCtx = null;
+let activeLang = "ru";
+let projectedNodes = [];
 
 const noise = Array.from({ length: 520 }, () => [Math.random(), Math.random(), Math.random()]);
 const scanColumns = Array.from({ length: 16 }, () => Math.random());
 const nodes = [];
 const sparks = [];
+
+const copy = {
+  ru: {
+    gateTitle: "TEAM VAC OS / VAC HANDSHAKE",
+    gateSub: "ТРЕБУЕТСЯ ПОДТВЕРЖДЕНИЕ ПОЛЬЗОВАТЕЛЯ",
+    startButton: "нажми на меня",
+    gateFooter: "ENTER / SPACE / ЛЕВЫЙ КЛИК",
+    hack: "P.O.N. malware взломал тебя.",
+    unlock: "Перейдите на страницу Steam и добавьте в wishlist для разблокировки.",
+    wishlist: "добавить в wishlist",
+    hint1: "нажми на нейрон PON",
+    hint2: "или введи тег в поиск",
+  },
+  en: {
+    gateTitle: "TEAM VAC OS / VAC HANDSHAKE",
+    gateSub: "USER CONFIRMATION REQUIRED",
+    startButton: "click me",
+    gateFooter: "ENTER / SPACE / LEFT CLICK",
+    hack: "P.O.N. malware hacked you.",
+    unlock: "Open the Steam page and add it to your wishlist to unlock.",
+    wishlist: "add to wishlist",
+    hint1: "click the PON neuron",
+    hint2: "or type a tag in search",
+  },
+  basic: {
+    gateTitle: "TEAM VAC OS",
+    gateSub: "PRESS BUTTON TO START",
+    startButton: "click",
+    gateFooter: "ENTER / SPACE / CLICK",
+    hack: "P.O.N. malware hacked you.",
+    unlock: "Go to Steam. Add to wishlist. Unlock.",
+    wishlist: "wishlist",
+    hint1: "click PON",
+    hint2: "search also works",
+  },
+};
 
 function resize() {
   width = innerWidth;
@@ -53,6 +95,25 @@ function resize() {
 
 addEventListener("resize", resize);
 resize();
+
+function setLanguage(lang) {
+  activeLang = copy[lang] ? lang : "ru";
+  document.documentElement.lang = activeLang === "ru" ? "ru" : "en";
+  i18nNodes.forEach((node) => {
+    const key = node.dataset.i18n;
+    if (copy[activeLang][key]) node.textContent = copy[activeLang][key];
+  });
+  langButtons.forEach((button) => button.classList.toggle("active", button.dataset.lang === activeLang));
+}
+
+langButtons.forEach((button) => {
+  button.addEventListener("click", (event) => {
+    event.stopPropagation();
+    setLanguage(button.dataset.lang);
+  });
+});
+
+setLanguage(activeLang);
 
 function beep(freq = 740, duration = 0.08, volume = 0.05) {
   audioCtx ||= new (window.AudioContext || window.webkitAudioContext)();
@@ -165,10 +226,9 @@ function findOrCreateNode(raw) {
   return nodes.length - 1;
 }
 
-function submitQuery(value) {
+function launchActivity(value, sourcePoint = null) {
   const text = value.trim();
-  if (!bootDone || !text || text === "QUERY_TAG://") return;
-  queryInput.value = "";
+  if (!bootDone || !text) return;
   activity += 1;
   if (galleryActive) closeGallery(false);
   const target = findOrCreateNode(text);
@@ -176,7 +236,7 @@ function submitQuery(value) {
   nodes[target].alert = 1;
   sparks.push({
     text: text.toUpperCase(),
-    source: worldFromScreen(220, 44, -410),
+    source: sourcePoint || worldFromScreen(220, 44, -410),
     target,
     start: performance.now(),
     duration: 820,
@@ -187,17 +247,20 @@ function submitQuery(value) {
 
 queryForm.addEventListener("submit", (event) => {
   event.preventDefault();
-  submitQuery(queryInput.value);
-});
-
-queryInput.addEventListener("focus", () => {
-  if (queryInput.value === "QUERY_TAG://") queryInput.value = "";
+  launchActivity(queryInput.value);
+  queryInput.value = "";
 });
 
 queryInput.addEventListener("keydown", (event) => {
   if (event.key !== "Enter") return;
   event.preventDefault();
-  submitQuery(queryInput.value);
+  launchActivity(queryInput.value);
+  queryInput.value = "";
+});
+
+wishlistButton.addEventListener("click", (event) => {
+  event.stopPropagation();
+  window.open(STEAM_URL, "_blank", "noopener,noreferrer");
 });
 
 function startBoot() {
@@ -219,6 +282,21 @@ addEventListener("keydown", (event) => {
 
 closeGalleryButton.addEventListener("click", () => closeGallery(true));
 
+function hitNode(clientX, clientY) {
+  let best = null;
+  let bestDistance = Infinity;
+  projectedNodes.forEach(([sx, sy, scale], i) => {
+    const node = nodes[i];
+    const radius = Math.max(18, (15 + Math.min(12, node.label.length * 0.2)) * scale);
+    const distance = Math.hypot(clientX - sx, clientY - sy);
+    if (distance <= radius && distance < bestDistance) {
+      best = i;
+      bestDistance = distance;
+    }
+  });
+  return best;
+}
+
 canvas.addEventListener("pointerdown", (event) => {
   if (!bootStarted) {
     startBoot();
@@ -226,16 +304,16 @@ canvas.addEventListener("pointerdown", (event) => {
   }
   if (!bootDone || galleryActive) return;
   dragging = true;
-  dragStart = [event.clientX, event.clientY, event.shiftKey];
+  dragStart = [event.clientX, event.clientY, event.shiftKey, event.clientX, event.clientY];
   canvas.setPointerCapture(event.pointerId);
 });
 
 canvas.addEventListener("pointermove", (event) => {
   if (!dragging || !dragStart || galleryActive) return;
-  const [px, py, pan] = dragStart;
+  const [px, py, pan, startX, startY] = dragStart;
   const dx = event.clientX - px;
   const dy = event.clientY - py;
-  dragStart = [event.clientX, event.clientY, event.shiftKey || pan];
+  dragStart = [event.clientX, event.clientY, event.shiftKey || pan, startX, startY];
   if (event.shiftKey || pan) {
     panX += dx;
     panY += dy;
@@ -245,7 +323,15 @@ canvas.addEventListener("pointermove", (event) => {
   }
 });
 
-canvas.addEventListener("pointerup", () => {
+canvas.addEventListener("pointerup", (event) => {
+  if (dragStart && bootDone && !galleryActive) {
+    const [, , , startX, startY] = dragStart;
+    const moved = Math.hypot(event.clientX - startX, event.clientY - startY);
+    const target = moved < 9 ? hitNode(event.clientX, event.clientY) : null;
+    if (target !== null) {
+      launchActivity(nodes[target].label, worldFromScreen(event.clientX, event.clientY, -410));
+    }
+  }
   dragging = false;
   dragStart = null;
 });
@@ -317,23 +403,24 @@ function text(value, x, y, color = WHITE, size = 12, align = "left", weight = "4
 }
 
 function drawHud() {
-  text("ENTER SEND  |  LMB ORBIT  |  SHIFT+LMB PAN  |  WHEEL ZOOM", 24, 82, MUTED, 10);
-  text("SIGNAL_CAPTURE / NODE INJECTION", 24, 112, RED, 11, "left", "700");
-  text("P.O.N. OS // ctOS-style graph", width - 26, 24, WHITE, 13, "right", "700");
+  const compact = width < 720;
+  text(compact ? "TAP NODE  |  DRAG ORBIT  |  PINCH/SEARCH" : "CLICK NODE  |  LMB ORBIT  |  SHIFT+LMB PAN  |  WHEEL ZOOM", 24, compact ? 72 : 82, MUTED, 10);
+  text("SIGNAL_CAPTURE / NODE INJECTION", 24, compact ? 98 : 112, RED, 11, "left", "700");
+  text("TEAM VAC OS // ctOS-style graph", width - 26, 24, WHITE, compact ? 11 : 13, "right", "700");
   text(`NODES ${String(nodes.length).padStart(3, "0")}  LINKS ${String(linkCount()).padStart(3, "0")}  EVENTS ${String(activity).padStart(3, "0")}`, width - 26, 48, MUTED, 10, "right");
   ctx.strokeStyle = WHITE;
   ctx.beginPath();
-  ctx.moveTo(24, 138);
-  ctx.lineTo(420, 138);
-  ctx.moveTo(width - 380, 70);
+  ctx.moveTo(24, compact ? 124 : 138);
+  ctx.lineTo(compact ? Math.min(300, width - 24) : 420, compact ? 124 : 138);
+  ctx.moveTo(Math.max(width - 380, 24), 70);
   ctx.lineTo(width - 26, 70);
   ctx.stroke();
   ctx.strokeStyle = RED;
   ctx.lineWidth = 2;
   ctx.beginPath();
-  ctx.moveTo(24, 139);
-  ctx.lineTo(136, 139);
-  ctx.moveTo(width - 150, 71);
+  ctx.moveTo(24, compact ? 125 : 139);
+  ctx.lineTo(compact ? 116 : 136, compact ? 125 : 139);
+  ctx.moveTo(Math.max(width - 150, 160), 71);
   ctx.lineTo(width - 26, 71);
   ctx.stroke();
   ctx.lineWidth = 1;
@@ -341,23 +428,26 @@ function drawHud() {
   ctx.strokeStyle = "#202428";
   ctx.strokeRect(24, height - 98, width - 48, 70);
   text("TIMELINE 24HRS", 36, height - 90, MUTED, 10);
-  for (let i = 0; i < 96; i += 1) {
+  const bars = compact ? Math.floor((width - 76) / 10) : 96;
+  for (let i = 0; i < bars; i += 1) {
     const h = 8 + (Math.sin(i * 0.23 + bgPhase * 4) + 1) * 22;
     ctx.fillStyle = i % 17 === 0 ? RED : WHITE;
-    ctx.fillRect(38 + i * 12, height - 38 - h, 5, h);
+    ctx.fillRect(38 + i * (compact ? 10 : 12), height - 38 - h, 5, h);
   }
 
   const age = (performance.now() - hintStart) / 1000;
   if (bootDone && !galleryActive && age < 14) {
     ctx.fillStyle = "#050607";
     ctx.strokeStyle = "#34383d";
-    ctx.fillRect(24, 164, 360, 92);
-    ctx.strokeRect(24, 164, 360, 92);
+    const hintY = compact ? 142 : 190;
+    const hintW = Math.min(360, width - 48);
+    ctx.fillRect(24, hintY, hintW, 82);
+    ctx.strokeRect(24, hintY, hintW, 82);
     ctx.fillStyle = RED;
-    ctx.fillRect(24, 164, 360, 2);
-    text("QUICK TRACE HINT", 40, 179, WHITE, 11, "left", "700");
-    text("type tag PON into search", 40, 206, MUTED, 10);
-    text("ENTER -> recovered tape gallery", 40, 226, Math.floor(age * 2.5) % 2 ? WHITE : RED, 10, "left", "700");
+    ctx.fillRect(24, hintY, hintW, 2);
+    text("QUICK TRACE HINT", 40, hintY + 15, WHITE, 11, "left", "700");
+    text(copy[activeLang].hint1, 40, hintY + 40, MUTED, 10);
+    text(copy[activeLang].hint2, 40, hintY + 60, Math.floor(age * 2.5) % 2 ? WHITE : RED, 10, "left", "700");
   }
 }
 
@@ -473,7 +563,6 @@ function loop(now) {
       boot.classList.add("hidden");
       denied.classList.add("hidden");
       queryForm.classList.remove("hidden");
-      queryInput.focus();
       hintStart = performance.now();
       beep(740, 0.09, 0.04);
     }
@@ -486,6 +575,7 @@ function loop(now) {
 
   drawBackground();
   const projected = nodes.map((node) => project(node.x, node.y, node.z));
+  projectedNodes = projected;
   drawHud();
   drawLinks(projected);
   drawSparks(projected);

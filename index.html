@@ -3,24 +3,31 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>P.O.N. OS</title>
+    <title>TEAM VAC OS</title>
+    <link rel="icon" href="./vac_icon.ico" sizes="any" />
+    <link rel="shortcut icon" href="./vac_icon.ico" />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
     <main id="app">
-      <canvas id="scene" aria-label="P.O.N. OS signal map"></canvas>
+      <canvas id="scene" aria-label="TEAM VAC OS signal map"></canvas>
 
       <form id="queryForm" class="query hidden" autocomplete="off">
-        <input id="queryInput" type="text" spellcheck="false" value="QUERY_TAG://" />
+        <input id="queryInput" type="text" spellcheck="false" placeholder="QUERY_TAG://" aria-label="Query tag" />
       </form>
 
       <section id="startGate" class="gate">
+        <div class="lang-switch" aria-label="Language">
+          <button type="button" data-lang="ru" class="active">RU</button>
+          <button type="button" data-lang="en">EN</button>
+          <button type="button" data-lang="basic">BASIC</button>
+        </div>
         <div class="gate-panel">
-          <div class="gate-title">P.O.N. OS / VAC HANDSHAKE</div>
+          <div class="gate-title" data-i18n="gateTitle">TEAM VAC OS / VAC HANDSHAKE</div>
           <div class="gate-line"></div>
-          <div class="gate-sub">USER CONFIRMATION REQUIRED</div>
-          <button id="startButton" class="gate-button" type="button">нажми по мне</button>
-          <div class="gate-footer">ENTER / SPACE / LEFT CLICK</div>
+          <div class="gate-sub" data-i18n="gateSub">ТРЕБУЕТСЯ ПОДТВЕРЖДЕНИЕ ПОЛЬЗОВАТЕЛЯ</div>
+          <button id="startButton" class="gate-button" type="button" data-i18n="startButton">нажми на меня</button>
+          <div class="gate-footer" data-i18n="gateFooter">ENTER / SPACE / ЛЕВЫЙ КЛИК</div>
         </div>
       </section>
 
@@ -37,8 +44,9 @@
           <div class="err">ERR_AUTH_LEVEL_INSUFFICIENT_LEVEL_04</div>
           <div class="access">[ ACCESS DENIED ]</div>
           <div class="divider"></div>
-          <div class="hack">Devci взломал тебя</div>
-          <div class="unlock">перейдите на страничку P.O.N. и добавьте в вишлист для разблокировки</div>
+          <div class="hack" data-i18n="hack">P.O.N. malware hacked you.</div>
+          <div class="unlock" data-i18n="unlock">Перейдите на страницу Steam и добавьте в wishlist для разблокировки.</div>
+          <button id="wishlistButton" class="wishlist-button" type="button" data-i18n="wishlist">добавить в wishlist</button>
           <pre>&gt; SCANNING BIOMETRICS........ FAIL
 &gt; CHECKING CLEARANCE......... FAIL
 &gt; PROTOCOL 4:44 INITIATED
@@ -49,7 +57,7 @@
       <section id="gallery" class="gallery hidden">
         <div class="gallery-head">
           <div>
-            <h1>P.O.N. OS / FOUND TAPE VISUALIZER</h1>
+            <h1>TEAM VAC OS / FOUND TAPE VISUALIZER</h1>
             <p>ARCHIVE_ITEMS 05 / SOURCE GIFPON</p>
           </div>
           <button id="closeGallery" type="button">ESC / EXIT</button>
@@ -61,7 +69,7 @@
           <article class="tape"><img src="./assets/pon_gifs/pon_tape_04.gif" alt="" /><span>TAPE_04 / RECOVERED_FILM_CUT</span><b>FOUND FOOTAGE</b><em>excerpt from recovered P.O.N. tape / integrity unstable</em></article>
           <article class="tape"><img src="./assets/pon_gifs/pon_tape_05.gif" alt="" /><span>TAPE_05 / RECOVERED_FILM_CUT</span><b>FOUND FOOTAGE</b><em>excerpt from recovered P.O.N. tape / integrity unstable</em></article>
         </div>
-        <div class="gallery-foot">ESC exits gallery / typing another tag returns to signal map</div>
+        <div class="gallery-foot">ESC exits gallery / click another node to return to signal map</div>
       </section>
     </main>
     <script src="./app.js"></script>

@@ -89,6 +89,37 @@ input {
   background-size: 88px 58px;
 }
 
+.lang-switch {
+  position: fixed;
+  right: 22px;
+  top: 20px;
+  z-index: 12;
+  display: flex;
+  gap: 6px;
+  padding: 5px;
+  border: 1px solid #33383d;
+  background: rgba(3, 4, 5, .86);
+}
+
+.lang-switch button {
+  min-width: 44px;
+  height: 30px;
+  border: 1px solid transparent;
+  color: var(--muted);
+  background: transparent;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.lang-switch button.active,
+.lang-switch button:hover,
+.lang-switch button:focus-visible {
+  border-color: var(--red);
+  color: var(--white);
+  outline: 0;
+}
+
 .gate-panel {
   position: absolute;
   left: 50%;
@@ -223,6 +254,27 @@ input {
   font-size: 13px;
 }
 
+.wishlist-button {
+  display: block;
+  min-width: 220px;
+  height: 44px;
+  margin: 24px auto 0;
+  border: 1px solid var(--red);
+  color: var(--white);
+  background: rgba(233, 22, 47, .14);
+  cursor: pointer;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.wishlist-button:hover,
+.wishlist-button:focus-visible {
+  background: var(--red);
+  color: var(--black);
+  outline: 0;
+}
+
 .denied pre {
   margin: 36px 0 0;
   color: var(--muted);
@@ -337,5 +389,93 @@ input {
   .tape-grid {
     grid-template-columns: 1fr;
     overflow: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .query {
+    left: 12px;
+    top: 12px;
+    width: min(260px, calc(100vw - 24px));
+    height: 38px;
+  }
+
+  .query input {
+    font-size: 12px;
+    padding: 0 10px;
+  }
+
+  .lang-switch {
+    right: 10px;
+    top: 10px;
+    gap: 3px;
+  }
+
+  .lang-switch button {
+    min-width: 38px;
+    height: 28px;
+    font-size: 10px;
+  }
+
+  .gate-panel {
+    width: calc(100vw - 30px);
+    height: auto;
+    min-height: 246px;
+    padding: 22px 16px;
+  }
+
+  .gate-title {
+    font-size: 15px;
+  }
+
+  .gate-button {
+    width: 100%;
+    height: 54px;
+    font-size: 17px;
+  }
+
+  .boot-title {
+    font-size: 28px;
+  }
+
+  .denied-box {
+    width: calc(100vw - 26px);
+    min-height: 0;
+    padding: 28px 18px;
+  }
+
+  .access {
+    font-size: 20px;
+  }
+
+  .hack {
+    font-size: 16px;
+  }
+
+  .unlock {
+    font-size: 11px;
+  }
+
+  .denied pre {
+    margin-top: 24px;
+    font-size: 8px;
+    white-space: pre-wrap;
+  }
+
+  .gallery {
+    padding: 16px;
+    overflow: auto;
+  }
+
+  .gallery-head {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .tape-grid {
+    height: auto;
+    grid-auto-rows: 240px;
+    gap: 12px;
   }
 }
