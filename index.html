@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>P.O.N. OS</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main id="app">
+      <canvas id="scene" aria-label="P.O.N. OS signal map"></canvas>
+
+      <form id="queryForm" class="query hidden" autocomplete="off">
+        <input id="queryInput" type="text" spellcheck="false" value="QUERY_TAG://" />
+      </form>
+
+      <section id="startGate" class="gate">
+        <div class="gate-panel">
+          <div class="gate-title">P.O.N. OS / VAC HANDSHAKE</div>
+          <div class="gate-line"></div>
+          <div class="gate-sub">USER CONFIRMATION REQUIRED</div>
+          <button id="startButton" class="gate-button" type="button">нажми по мне</button>
+          <div class="gate-footer">ENTER / SPACE / LEFT CLICK</div>
+        </div>
+      </section>
+
+      <section id="boot" class="boot hidden">
+        <div class="boot-content">
+          <div class="boot-title">Team VAC</div>
+          <div class="boot-sub">LOADING</div>
+          <div class="boot-bar"><div id="bootFill"></div></div>
+        </div>
+      </section>
+
+      <section id="denied" class="denied hidden">
+        <div class="denied-box">
+          <div class="err">ERR_AUTH_LEVEL_INSUFFICIENT_LEVEL_04</div>
+          <div class="access">[ ACCESS DENIED ]</div>
+          <div class="divider"></div>
+          <div class="hack">Devci взломал тебя</div>
+          <div class="unlock">перейдите на страничку P.O.N. и добавьте в вишлист для разблокировки</div>
+          <pre>&gt; SCANNING BIOMETRICS........ FAIL
+&gt; CHECKING CLEARANCE......... FAIL
+&gt; PROTOCOL 4:44 INITIATED
+&gt; ATTEMPT LOGGED. TEAM VAC NOTIFIED.</pre>
+        </div>
+      </section>
+
+      <section id="gallery" class="gallery hidden">
+        <div class="gallery-head">
+          <div>
+            <h1>P.O.N. OS / FOUND TAPE VISUALIZER</h1>
+            <p>ARCHIVE_ITEMS 05 / SOURCE GIFPON</p>
+          </div>
+          <button id="closeGallery" type="button">ESC / EXIT</button>
+        </div>
+        <div class="tape-grid">
+          <article class="tape"><img src="./assets/pon_gifs/pon_tape_01.gif" alt="" /><span>TAPE_01 / RECOVERED_FILM_CUT</span><b>FOUND FOOTAGE</b><em>excerpt from recovered P.O.N. tape / integrity unstable</em></article>
+          <article class="tape"><img src="./assets/pon_gifs/pon_tape_02.gif" alt="" /><span>TAPE_02 / RECOVERED_FILM_CUT</span><b>FOUND FOOTAGE</b><em>excerpt from recovered P.O.N. tape / integrity unstable</em></article>
+          <article class="tape"><img src="./assets/pon_gifs/pon_tape_03.gif" alt="" /><span>TAPE_03 / RECOVERED_FILM_CUT</span><b>FOUND FOOTAGE</b><em>excerpt from recovered P.O.N. tape / integrity unstable</em></article>
+          <article class="tape"><img src="./assets/pon_gifs/pon_tape_04.gif" alt="" /><span>TAPE_04 / RECOVERED_FILM_CUT</span><b>FOUND FOOTAGE</b><em>excerpt from recovered P.O.N. tape / integrity unstable</em></article>
+          <article class="tape"><img src="./assets/pon_gifs/pon_tape_05.gif" alt="" /><span>TAPE_05 / RECOVERED_FILM_CUT</span><b>FOUND FOOTAGE</b><em>excerpt from recovered P.O.N. tape / integrity unstable</em></article>
+        </div>
+        <div class="gallery-foot">ESC exits gallery / typing another tag returns to signal map</div>
+      </section>
+    </main>
+    <script src="./app.js"></script>
+  </body>
+</html>
