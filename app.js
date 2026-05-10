@@ -29,6 +29,8 @@ const URL_DISCORD = "https://discord.com/invite/KUwMKcFucr";
 const URL_YOUTUBE = "https://www.youtube.com/@steampon";
 const URL_TIKTOK = "https://www.tiktok.com/@devci__";
 const URL_INSTAGRAM = "https://www.instagram.com/marsdevgod/";
+const URL_PUBLISHER_SITE = "https://spaghetticat.io/";
+const URL_PUBLISHER_STEAM = "https://store.steampowered.com/curator/46103900";
 
 const NODE_BEHAVIOR = {
   PON:           { type: "gallery" },
@@ -71,6 +73,82 @@ const scanColumns = Array.from({ length: 16 }, () => Math.random());
 const nodes = [];
 const sparks = [];
 
+const publisherProjects = [
+  {
+    title: "Provoron",
+    image: "./assets/publisher/provoron.jpg",
+    desc: "Hand-drawn, touching and atmospheric tale of coming of age and self-acceptance.",
+  },
+  {
+    title: "Lost in the Roots",
+    image: "./assets/publisher/lost_in_the_roots.jpg",
+    desc: "Haunting adventure puzzle wrapped in a grim, tangled mystery.",
+  },
+  {
+    title: "Kaiju Cleaner Simulator",
+    image: "./assets/publisher/kaiju_cleaner.png",
+    desc: "Co-op cleanup simulator about giant kaiju carcasses after epic battles.",
+  },
+  {
+    title: "BUS: Bro u Survived",
+    image: "./assets/publisher/bus_bro_u_survived.jpg",
+    desc: "Co-op story-driven survival adventure with a bus, zombies and an epidemic mystery.",
+  },
+];
+
+function publisherHtml() {
+  const cards = publisherProjects.map((project, index) => `
+    <article class="publisher-card">
+      <div class="publisher-shot">
+        <img src="${project.image}" alt="${project.title}" loading="lazy" />
+      </div>
+      <div class="publisher-card-meta">
+        <span>PROJECT_${String(index + 1).padStart(2, "0")}</span>
+        <h2>${project.title}</h2>
+        <p>${project.desc}</p>
+      </div>
+    </article>
+  `).join("");
+
+  return `
+    <div class="publisher-dossier">
+      <div class="publisher-hero">
+        <img class="publisher-hero-bg" src="./assets/publisher/spaghetti_cat_header.jpg" alt="Spaghetti Cat" loading="lazy" />
+        <div class="publisher-hero-overlay">
+          <img class="publisher-icon" src="./assets/publisher/spaghetti_cat_icon.png" alt="" loading="lazy" />
+          <span>[ VERIFIED EXTERNAL NODE ]</span>
+          <h2>SPAGHETTI CAT</h2>
+          <p>Publishing and developer-support partner for indie games. Public signal: interesting games made with soul.</p>
+          <div class="publisher-actions">
+            <a href="${URL_PUBLISHER_SITE}" target="_blank" rel="noopener noreferrer">OPEN SITE</a>
+            <a href="${URL_PUBLISHER_STEAM}" target="_blank" rel="noopener noreferrer">STEAM CURATOR</a>
+          </div>
+        </div>
+      </div>
+      <div class="publisher-mirror">
+        <div class="publisher-mirror-head">
+          <span>LIVE_SITE_MIRROR</span>
+          <b>spaghetticat.io</b>
+        </div>
+        <iframe
+          title="Spaghetti Cat live mirror"
+          src="${URL_PUBLISHER_SITE}"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+        ></iframe>
+        <p>If the live mirror is blocked by the publisher site, use OPEN SITE above.</p>
+      </div>
+      <div class="publisher-grid">${cards}</div>
+      <div class="publisher-terminal">
+        <b>SERVICE VECTOR</b>
+        <span>&gt; publishing support / marketing / PR / QA / development support</span>
+        <span>&gt; campaign coverage from announcement through release and beyond</span>
+        <span>&gt; contact channel: info@spaghetticat.io</span>
+      </div>
+    </div>
+  `;
+}
+
 const copy = {
   en: {
     gateTitle: "TEAM VAC OS",
@@ -86,29 +164,7 @@ const copy = {
     devci: { title: "DEVELOPER_DEVCI", body: "[ DATA ENCRYPTED ]" },
     publisher: {
       title: "PUBLISHER / SPAGHETTI CAT",
-      body: [
-        "[ VERIFIED EXTERNAL NODE ]",
-        "SOURCE: spaghetticat.io",
-        "",
-        "Spaghetti Cat is a publishing and developer-support partner for indie games.",
-        "Their public signal is simple: pitch a game if it is interesting and made with soul.",
-        "",
-        "SERVICE VECTOR:",
-        "> publishing support",
-        "> marketing / PR",
-        "> QA",
-        "> development support",
-        "> announcement-to-release campaign coverage",
-        "",
-        "KNOWN SIGNALS:",
-        "> Provoron",
-        "> Lost in the Roots",
-        "> Kaiju Cleaner Simulator",
-        "> BUS: Bro u Survived",
-        "",
-        "CONTACT CHANNEL:",
-        "> info@spaghetticat.io",
-      ].join("\n"),
+      html: publisherHtml,
     },
     faq:   { title: "FAQ",             body: "[ DATA ENCRYPTED ]" },
     about: { title: "ABOUT_TEAM",      body: "Team VAC - Void Analytics Core" },
@@ -127,29 +183,7 @@ const copy = {
     devci: { title: "DEVELOPER_DEVCI", body: "[ ДАННЫЕ ЗАШИФРОВАНЫ ]" },
     publisher: {
       title: "PUBLISHER / SPAGHETTI CAT",
-      body: [
-        "[ VERIFIED EXTERNAL NODE ]",
-        "SOURCE: spaghetticat.io",
-        "",
-        "Spaghetti Cat - publisher / support partner for indie games.",
-        "Public signal: pitch a game if it is interesting and made with soul.",
-        "",
-        "SERVICE VECTOR:",
-        "> publishing support",
-        "> marketing / PR",
-        "> QA",
-        "> development support",
-        "> announcement-to-release campaign coverage",
-        "",
-        "KNOWN SIGNALS:",
-        "> Provoron",
-        "> Lost in the Roots",
-        "> Kaiju Cleaner Simulator",
-        "> BUS: Bro u Survived",
-        "",
-        "CONTACT CHANNEL:",
-        "> info@spaghetticat.io",
-      ].join("\n"),
+      html: publisherHtml,
     },
     faq:   { title: "FAQ",             body: "[ ДАННЫЕ ЗАШИФРОВАНЫ ]" },
     about: { title: "ABOUT_TEAM",      body: "[ ДАННЫЕ ЗАШИФРОВАНЫ ]" },
@@ -442,7 +476,12 @@ function refreshPanelText() {
   const entry = key && copy[activeLang][key];
   if (!entry) return;
   panelTitle.textContent = entry.title;
-  panelBody.textContent = entry.body;
+  panelBody.classList.toggle("panel-body--publisher", Boolean(entry.html));
+  if (entry.html) {
+    panelBody.innerHTML = typeof entry.html === "function" ? entry.html() : entry.html;
+  } else {
+    panelBody.textContent = entry.body;
+  }
 }
 
 function openPanel(key) {
