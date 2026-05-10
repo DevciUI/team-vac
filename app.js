@@ -12,6 +12,10 @@ const denied = document.querySelector("#denied");
 const wishlistButton = document.querySelector("#wishlistButton");
 const gallery = document.querySelector("#gallery");
 const closeGalleryButton = document.querySelector("#closeGallery");
+const panel = document.querySelector("#panel");
+const panelTitle = document.querySelector("#panelTitle");
+const panelBody = document.querySelector("#panelBody");
+const closePanelButton = document.querySelector("#closePanel");
 
 const BLACK = "#030405";
 const WHITE = "#f2f2ee";
@@ -19,7 +23,26 @@ const MUTED = "#81868c";
 const RED = "#e9162f";
 const RED_DIM = "#6e0b17";
 const FOCAL = 680;
-const STEAM_URL = "https://store.steampowered.com/app/3864580/PON/";
+
+const URL_STEAM = "https://store.steampowered.com/app/3864580/PON/";
+const URL_DISCORD = "https://discord.com/invite/KUwMKcFucr";
+const URL_YOUTUBE = "https://www.youtube.com/@steampon";
+const URL_TIKTOK = "https://www.tiktok.com/@devci__";
+const URL_INSTAGRAM = "https://www.instagram.com/marsdevgod/";
+
+const NODE_BEHAVIOR = {
+  PON:           { type: "gallery" },
+  WISHLIST_PON:  { type: "url",    href: URL_STEAM },
+  DISCORD_PON:   { type: "url",    href: URL_DISCORD },
+  YOUTUBE_PON:   { type: "url",    href: URL_YOUTUBE },
+  TIKTOK_PON:    { type: "url",    href: URL_TIKTOK },
+  INSTAGRAM:     { type: "url",    href: URL_INSTAGRAM },
+  DEVELOPER_MARS:  { type: "panel",  key: "mars" },
+  DEVELOPER_DEVCI: { type: "panel",  key: "devci" },
+  PUBLISHER:        { type: "panel",  key: "publisher" },
+  FAQ:           { type: "panel",  key: "faq" },
+  ABOUT_TEAM:    { type: "panel",  key: "about" },
+};
 
 let width = innerWidth;
 let height = innerHeight;
@@ -35,11 +58,12 @@ let bootDone = false;
 let bootStart = 0;
 let activity = 0;
 let galleryActive = false;
+let panelActive = false;
 let hintStart = 0;
 let lastTime = performance.now();
 let bgPhase = 0;
 let audioCtx = null;
-let activeLang = "ru";
+let activeLang = "en";
 let projectedNodes = [];
 
 const noise = Array.from({ length: 520 }, () => [Math.random(), Math.random(), Math.random()]);
@@ -48,38 +72,87 @@ const nodes = [];
 const sparks = [];
 
 const copy = {
-  ru: {
-    gateTitle: "TEAM VAC OS / VAC HANDSHAKE",
-    gateSub: "ТРЕБУЕТСЯ ПОДТВЕРЖДЕНИЕ ПОЛЬЗОВАТЕЛЯ",
-    startButton: "нажми на меня",
-    gateFooter: "ENTER / SPACE / ЛЕВЫЙ КЛИК",
-    hack: "P.O.N. malware взломал тебя.",
-    unlock: "Перейдите на страницу Steam и добавьте в wishlist для разблокировки.",
-    wishlist: "добавить в wishlist",
-    hint1: "нажми на нейрон PON",
-    hint2: "или введи тег в поиск",
-  },
   en: {
-    gateTitle: "TEAM VAC OS / VAC HANDSHAKE",
+    gateTitle: "TEAM VAC OS",
     gateSub: "USER CONFIRMATION REQUIRED",
-    startButton: "click me",
+    startButton: "CONFIRM",
     gateFooter: "ENTER / SPACE / LEFT CLICK",
     hack: "P.O.N. malware hacked you.",
-    unlock: "Open the Steam page and add it to your wishlist to unlock.",
-    wishlist: "add to wishlist",
-    hint1: "click the PON neuron",
-    hint2: "or type a tag in search",
+    unlock: "Open the Steam page and add to wishlist to unlock.",
+    wishlist: "ADD TO WISHLIST",
+    hint1: "Click the PON node",
+    hint2: "Or type a tag in search",
+    mars:  { title: "DEVELOPER_MARS",  body: "[ DATA ENCRYPTED ]" },
+    devci: { title: "DEVELOPER_DEVCI", body: "[ DATA ENCRYPTED ]" },
+    publisher: {
+      title: "PUBLISHER / SPAGHETTI CAT",
+      body: [
+        "[ VERIFIED EXTERNAL NODE ]",
+        "SOURCE: spaghetticat.io",
+        "",
+        "Spaghetti Cat is a publishing and developer-support partner for indie games.",
+        "Their public signal is simple: pitch a game if it is interesting and made with soul.",
+        "",
+        "SERVICE VECTOR:",
+        "> publishing support",
+        "> marketing / PR",
+        "> QA",
+        "> development support",
+        "> announcement-to-release campaign coverage",
+        "",
+        "KNOWN SIGNALS:",
+        "> Provoron",
+        "> Lost in the Roots",
+        "> Kaiju Cleaner Simulator",
+        "> BUS: Bro u Survived",
+        "",
+        "CONTACT CHANNEL:",
+        "> info@spaghetticat.io",
+      ].join("\n"),
+    },
+    faq:   { title: "FAQ",             body: "[ DATA ENCRYPTED ]" },
+    about: { title: "ABOUT_TEAM",      body: "Team VAC - Void Analytics Core" },
   },
-  basic: {
+  ru: {
     gateTitle: "TEAM VAC OS",
-    gateSub: "PRESS BUTTON TO START",
-    startButton: "click",
-    gateFooter: "ENTER / SPACE / CLICK",
-    hack: "P.O.N. malware hacked you.",
-    unlock: "Go to Steam. Add to wishlist. Unlock.",
-    wishlist: "wishlist",
-    hint1: "click PON",
-    hint2: "search also works",
+    gateSub: "ТРЕБУЕТСЯ ПОДТВЕРЖДЕНИЕ ДОСТУПА",
+    startButton: "ПОДТВЕРДИТЬ",
+    gateFooter: "ENTER / SPACE / ЛКМ",
+    hack: "Вирус P.O.N. получил доступ к системе.",
+    unlock: "Добавить игру в список желаемого Steam для разблокировки.",
+    wishlist: "ДОБАВИТЬ В СПИСОК ЖЕЛАЕМОГО",
+    hint1: "Кликнуть по узлу PON",
+    hint2: "Или ввести тег в поиск",
+    mars:  { title: "DEVELOPER_MARS",  body: "[ ДАННЫЕ ЗАШИФРОВАНЫ ]" },
+    devci: { title: "DEVELOPER_DEVCI", body: "[ ДАННЫЕ ЗАШИФРОВАНЫ ]" },
+    publisher: {
+      title: "PUBLISHER / SPAGHETTI CAT",
+      body: [
+        "[ VERIFIED EXTERNAL NODE ]",
+        "SOURCE: spaghetticat.io",
+        "",
+        "Spaghetti Cat - publisher / support partner for indie games.",
+        "Public signal: pitch a game if it is interesting and made with soul.",
+        "",
+        "SERVICE VECTOR:",
+        "> publishing support",
+        "> marketing / PR",
+        "> QA",
+        "> development support",
+        "> announcement-to-release campaign coverage",
+        "",
+        "KNOWN SIGNALS:",
+        "> Provoron",
+        "> Lost in the Roots",
+        "> Kaiju Cleaner Simulator",
+        "> BUS: Bro u Survived",
+        "",
+        "CONTACT CHANNEL:",
+        "> info@spaghetticat.io",
+      ].join("\n"),
+    },
+    faq:   { title: "FAQ",             body: "[ ДАННЫЕ ЗАШИФРОВАНЫ ]" },
+    about: { title: "ABOUT_TEAM",      body: "[ ДАННЫЕ ЗАШИФРОВАНЫ ]" },
   },
 };
 
@@ -97,13 +170,15 @@ addEventListener("resize", resize);
 resize();
 
 function setLanguage(lang) {
-  activeLang = copy[lang] ? lang : "ru";
-  document.documentElement.lang = activeLang === "ru" ? "ru" : "en";
+  activeLang = copy[lang] ? lang : "en";
+  document.documentElement.lang = activeLang;
   i18nNodes.forEach((node) => {
     const key = node.dataset.i18n;
-    if (copy[activeLang][key]) node.textContent = copy[activeLang][key];
+    const value = copy[activeLang][key];
+    if (typeof value === "string") node.textContent = value;
   });
   langButtons.forEach((button) => button.classList.toggle("active", button.dataset.lang === activeLang));
+  if (panelActive) refreshPanelText();
 }
 
 langButtons.forEach((button) => {
@@ -134,18 +209,16 @@ function seedMap() {
   nodes.push({ label: "CORE", x: 0, y: 0, z: 0, color: WHITE, pulse: 0.45, alert: 0, links: [] });
   const seeds = [
     "PON",
-    "MOBILE_DATA",
-    "SOCIAL_MEDIA",
-    "SMS",
-    "CAMERA_FEED",
-    "AUDIO_TRACE",
-    "LOCATION",
-    "ARCHIVE",
-    "BIOMETRIC",
-    "VECTOR",
-    "BREACH",
-    "NODE_045",
-    "SIGNAL",
+    "WISHLIST_PON",
+    "DISCORD_PON",
+    "YOUTUBE_PON",
+    "TIKTOK_PON",
+    "INSTAGRAM",
+    "DEVELOPER_MARS",
+    "DEVELOPER_DEVCI",
+    "PUBLISHER",
+    "FAQ",
+    "ABOUT_TEAM",
   ];
 
   seeds.forEach((label, i) => {
@@ -156,9 +229,9 @@ function seedMap() {
       x: Math.cos(angle) * radius,
       y: Math.sin(angle) * radius * 0.68,
       z: -160 + Math.random() * 340,
-      color: ["PON", "CAMERA_FEED", "BIOMETRIC", "BREACH"].includes(label) ? RED : WHITE,
+      color: label === "PON" ? RED : WHITE,
       pulse: 0,
-      alert: label === "PON" ? 0.35 : ["CAMERA_FEED", "BIOMETRIC", "BREACH"].includes(label) ? 0.25 : 0,
+      alert: label === "PON" ? 0.35 : 0,
       links: [0],
     };
     nodes[0].links.push(nodes.length);
@@ -231,6 +304,7 @@ function launchActivity(value, sourcePoint = null) {
   if (!bootDone || !text) return;
   activity += 1;
   if (galleryActive) closeGallery(false);
+  if (panelActive) closePanel(false);
   const target = findOrCreateNode(text);
   nodes[target].pulse = 1;
   nodes[target].alert = 1;
@@ -240,7 +314,6 @@ function launchActivity(value, sourcePoint = null) {
     target,
     start: performance.now(),
     duration: 820,
-    openGallery: nodes[target].label === "PON",
   });
   beep(1180, 0.07, 0.035);
 }
@@ -260,7 +333,7 @@ queryInput.addEventListener("keydown", (event) => {
 
 wishlistButton.addEventListener("click", (event) => {
   event.stopPropagation();
-  window.open(STEAM_URL, "_blank", "noopener,noreferrer");
+  window.open(URL_STEAM, "_blank", "noopener,noreferrer");
 });
 
 function startBoot() {
@@ -277,10 +350,14 @@ startButton.addEventListener("click", startBoot);
 startGate.addEventListener("click", startBoot);
 addEventListener("keydown", (event) => {
   if (!bootStarted && (event.key === "Enter" || event.key === " ")) startBoot();
-  if (event.key === "Escape" && galleryActive) closeGallery(true);
+  if (event.key === "Escape") {
+    if (galleryActive) closeGallery(true);
+    else if (panelActive) closePanel(true);
+  }
 });
 
 closeGalleryButton.addEventListener("click", () => closeGallery(true));
+closePanelButton.addEventListener("click", () => closePanel(true));
 
 function hitNode(clientX, clientY) {
   let best = null;
@@ -302,19 +379,19 @@ canvas.addEventListener("pointerdown", (event) => {
     startBoot();
     return;
   }
-  if (!bootDone || galleryActive) return;
+  if (!bootDone || galleryActive || panelActive) return;
   dragging = true;
-  dragStart = [event.clientX, event.clientY, event.shiftKey, event.clientX, event.clientY];
+  dragStart = [event.clientX, event.clientY, event.clientX, event.clientY];
   canvas.setPointerCapture(event.pointerId);
 });
 
 canvas.addEventListener("pointermove", (event) => {
-  if (!dragging || !dragStart || galleryActive) return;
-  const [px, py, pan, startX, startY] = dragStart;
+  if (!dragging || !dragStart || galleryActive || panelActive) return;
+  const [px, py, startX, startY] = dragStart;
   const dx = event.clientX - px;
   const dy = event.clientY - py;
-  dragStart = [event.clientX, event.clientY, event.shiftKey || pan, startX, startY];
-  if (event.shiftKey || pan) {
+  dragStart = [event.clientX, event.clientY, startX, startY];
+  if (event.shiftKey) {
     panX += dx;
     panY += dy;
   } else {
@@ -324,8 +401,8 @@ canvas.addEventListener("pointermove", (event) => {
 });
 
 canvas.addEventListener("pointerup", (event) => {
-  if (dragStart && bootDone && !galleryActive) {
-    const [, , , startX, startY] = dragStart;
+  if (dragStart && bootDone && !galleryActive && !panelActive) {
+    const [, , startX, startY] = dragStart;
     const moved = Math.hypot(event.clientX - startX, event.clientY - startY);
     const target = moved < 9 ? hitNode(event.clientX, event.clientY) : null;
     if (target !== null) {
@@ -336,8 +413,13 @@ canvas.addEventListener("pointerup", (event) => {
   dragStart = null;
 });
 
+canvas.addEventListener("pointercancel", () => {
+  dragging = false;
+  dragStart = null;
+});
+
 canvas.addEventListener("wheel", (event) => {
-  if (!bootDone || galleryActive) return;
+  if (!bootDone || galleryActive || panelActive) return;
   event.preventDefault();
   zoom = Math.max(0.45, Math.min(2.7, zoom * (event.deltaY < 0 ? 1.09 : 0.91)));
 }, { passive: false });
@@ -352,6 +434,29 @@ function openGallery() {
 function closeGallery(playSound = true) {
   galleryActive = false;
   gallery.classList.add("hidden");
+  if (playSound) beep(520, 0.12, 0.035);
+}
+
+function refreshPanelText() {
+  const key = panel.dataset.key;
+  const entry = key && copy[activeLang][key];
+  if (!entry) return;
+  panelTitle.textContent = entry.title;
+  panelBody.textContent = entry.body;
+}
+
+function openPanel(key) {
+  panelActive = true;
+  panel.dataset.key = key;
+  refreshPanelText();
+  panel.classList.remove("hidden");
+  dragging = false;
+  beep(360, 0.18, 0.04);
+}
+
+function closePanel(playSound = true) {
+  panelActive = false;
+  panel.classList.add("hidden");
   if (playSound) beep(520, 0.12, 0.035);
 }
 
@@ -428,15 +533,20 @@ function drawHud() {
   ctx.strokeStyle = "#202428";
   ctx.strokeRect(24, height - 98, width - 48, 70);
   text("TIMELINE 24HRS", 36, height - 90, MUTED, 10);
-  const bars = compact ? Math.floor((width - 76) / 10) : 96;
+  const barPitch = compact ? 10 : 12;
+  const bars = Math.floor((width - 76) / barPitch);
   for (let i = 0; i < bars; i += 1) {
-    const h = 8 + (Math.sin(i * 0.23 + bgPhase * 4) + 1) * 22;
+    const wave = (
+      Math.sin(i * 0.23 + bgPhase * 4) +
+      Math.sin(i * 0.07 + bgPhase * 5.3) * 0.4
+    ) / 1.4;
+    const h = 8 + (wave + 1) * 22;
     ctx.fillStyle = i % 17 === 0 ? RED : WHITE;
-    ctx.fillRect(38 + i * (compact ? 10 : 12), height - 38 - h, 5, h);
+    ctx.fillRect(38 + i * barPitch, height - 38 - h, 5, h);
   }
 
   const age = (performance.now() - hintStart) / 1000;
-  if (bootDone && !galleryActive && age < 14) {
+  if (bootDone && !galleryActive && !panelActive && age < 14) {
     ctx.fillStyle = "#050607";
     ctx.strokeStyle = "#34383d";
     const hintY = compact ? 142 : 190;
@@ -481,7 +591,14 @@ function drawSparks(projected) {
     if (t >= 1) {
       nodes[spark.target].pulse = 1;
       nodes[spark.target].alert = 1;
-      if (spark.openGallery) openGallery();
+      const behavior = NODE_BEHAVIOR[nodes[spark.target].label];
+      if (behavior?.type === "gallery") {
+        openGallery();
+      } else if (behavior?.type === "url" && behavior.href !== "TODO") {
+        window.open(behavior.href, "_blank", "noopener,noreferrer");
+      } else if (behavior?.type === "panel") {
+        openPanel(behavior.key);
+      }
       sparks.splice(i, 1);
       continue;
     }

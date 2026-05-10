@@ -1,9 +1,18 @@
 <!doctype html>
-<html lang="ru">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>TEAM VAC OS</title>
+    <meta name="description" content="Team VAC is a small indie games team, cooking up P.O.N." />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="TEAM VAC OS" />
+    <meta property="og:description" content="Team VAC is a small indie games team, cooking up P.O.N." />
+    <meta property="og:image" content="./assets/og_preview_v2.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="TEAM VAC OS" />
+    <meta name="twitter:description" content="Team VAC is a small indie games team, cooking up P.O.N." />
+    <meta name="twitter:image" content="./assets/og_preview_v2.png" />
     <link rel="icon" href="./vac_icon.ico" sizes="any" />
     <link rel="shortcut icon" href="./vac_icon.ico" />
     <link rel="stylesheet" href="./styles.css" />
@@ -18,16 +27,15 @@
 
       <section id="startGate" class="gate">
         <div class="lang-switch" aria-label="Language">
-          <button type="button" data-lang="ru" class="active">RU</button>
-          <button type="button" data-lang="en">EN</button>
-          <button type="button" data-lang="basic">BASIC</button>
+          <button type="button" data-lang="en" class="active">EN</button>
+          <button type="button" data-lang="ru">RU</button>
         </div>
         <div class="gate-panel">
-          <div class="gate-title" data-i18n="gateTitle">TEAM VAC OS / VAC HANDSHAKE</div>
+          <div class="gate-title" data-i18n="gateTitle">TEAM VAC OS</div>
           <div class="gate-line"></div>
-          <div class="gate-sub" data-i18n="gateSub">ТРЕБУЕТСЯ ПОДТВЕРЖДЕНИЕ ПОЛЬЗОВАТЕЛЯ</div>
-          <button id="startButton" class="gate-button" type="button" data-i18n="startButton">нажми на меня</button>
-          <div class="gate-footer" data-i18n="gateFooter">ENTER / SPACE / ЛЕВЫЙ КЛИК</div>
+          <div class="gate-sub" data-i18n="gateSub">USER CONFIRMATION REQUIRED</div>
+          <button id="startButton" class="gate-button" type="button" data-i18n="startButton">CONFIRM</button>
+          <div class="gate-footer" data-i18n="gateFooter">ENTER / SPACE / LEFT CLICK</div>
         </div>
       </section>
 
@@ -45,8 +53,8 @@
           <div class="access">[ ACCESS DENIED ]</div>
           <div class="divider"></div>
           <div class="hack" data-i18n="hack">P.O.N. malware hacked you.</div>
-          <div class="unlock" data-i18n="unlock">Перейдите на страницу Steam и добавьте в wishlist для разблокировки.</div>
-          <button id="wishlistButton" class="wishlist-button" type="button" data-i18n="wishlist">добавить в wishlist</button>
+          <div class="unlock" data-i18n="unlock">Open the Steam page and add to wishlist to unlock.</div>
+          <button id="wishlistButton" class="wishlist-button" type="button" data-i18n="wishlist">ADD TO WISHLIST</button>
           <pre>&gt; SCANNING BIOMETRICS........ FAIL
 &gt; CHECKING CLEARANCE......... FAIL
 &gt; PROTOCOL 4:44 INITIATED
@@ -70,6 +78,14 @@
           <article class="tape"><img src="./assets/pon_gifs/pon_tape_05.gif" alt="" /><span>TAPE_05 / RECOVERED_FILM_CUT</span><b>FOUND FOOTAGE</b><em>excerpt from recovered P.O.N. tape / integrity unstable</em></article>
         </div>
         <div class="gallery-foot">ESC exits gallery / click another node to return to signal map</div>
+      </section>
+
+      <section id="panel" class="panel hidden">
+        <div class="panel-head">
+          <h1 id="panelTitle"></h1>
+          <button id="closePanel" type="button">ESC / EXIT</button>
+        </div>
+        <div id="panelBody" class="panel-body"></div>
       </section>
     </main>
     <script src="./app.js"></script>
