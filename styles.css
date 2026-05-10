@@ -608,6 +608,25 @@ input {
   background: #000;
 }
 
+.publisher-card--featured {
+  grid-column: span 2;
+  min-height: 340px;
+  border-color: var(--red);
+}
+
+.publisher-card--featured .publisher-shot img {
+  filter: grayscale(.08) contrast(1.25) brightness(.78);
+}
+
+.publisher-card--featured .publisher-card-meta {
+  max-width: 680px;
+}
+
+.publisher-card--featured .publisher-card-meta h2 {
+  color: var(--red);
+  font-size: clamp(30px, 4vw, 54px);
+}
+
 .publisher-shot {
   position: absolute;
   inset: 0;
@@ -789,6 +808,11 @@ input {
 
   .publisher-card {
     min-height: 260px;
+  }
+
+  .publisher-card--featured {
+    grid-column: span 1;
+    min-height: 280px;
   }
 
   .publisher-terminal {

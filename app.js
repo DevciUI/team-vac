@@ -75,6 +75,12 @@ const sparks = [];
 
 const publisherProjects = [
   {
+    title: "P.O.N.",
+    image: "./assets/og_preview_v2.png",
+    desc: "TEAM VAC signal project. VHS horror interface, recovered tapes and Steam wishlist target.",
+    featured: true,
+  },
+  {
     title: "Provoron",
     image: "./assets/publisher/provoron.jpg",
     desc: "Hand-drawn, touching and atmospheric tale of coming of age and self-acceptance.",
@@ -98,7 +104,7 @@ const publisherProjects = [
 
 function publisherHtml() {
   const cards = publisherProjects.map((project, index) => `
-    <article class="publisher-card">
+    <article class="publisher-card${project.featured ? " publisher-card--featured" : ""}">
       <div class="publisher-shot">
         <img src="${project.image}" alt="${project.title}" loading="lazy" />
       </div>
