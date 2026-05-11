@@ -31,6 +31,9 @@ const URL_TIKTOK = "https://www.tiktok.com/@devci__";
 const URL_INSTAGRAM = "https://www.instagram.com/marsdevgod/";
 const URL_PUBLISHER_SITE = "https://spaghetticat.io/";
 const URL_PUBLISHER_STEAM = "https://store.steampowered.com/curator/46103900";
+const URL_MARS_INSTAGRAM = "https://www.instagram.com/marsdevgod/";
+const URL_MARS_TIKTOK = "https://www.tiktok.com/@marsdevgod";
+const URL_MARS_YOUTUBE = "https://www.youtube.com/@marsdevgod";
 
 const NODE_BEHAVIOR = {
   PON:           { type: "gallery" },
@@ -155,6 +158,33 @@ function publisherHtml() {
   `;
 }
 
+function marsHtml() {
+  return `
+    <div class="developer-dossier developer-dossier--mars">
+      <div class="developer-photo">
+        <img src="./assets/developers/marsdevgod.jpg" alt="Mars developer" loading="lazy" />
+        <div class="developer-photo-tag">VISUAL NODE / MARSDEVGOD</div>
+      </div>
+      <div class="developer-profile">
+        <span>[ VERIFIED TEAM NODE ]</span>
+        <h2>MARS DEVELOPER</h2>
+        <p>Creative signal linked to TEAM VAC OS. Social vector: marsdevgod.</p>
+        <div class="developer-actions">
+          <a href="${URL_MARS_INSTAGRAM}" target="_blank" rel="noopener noreferrer">INSTAGRAM</a>
+          <a href="${URL_MARS_TIKTOK}" target="_blank" rel="noopener noreferrer">TIKTOK</a>
+          <a href="${URL_MARS_YOUTUBE}" target="_blank" rel="noopener noreferrer">YOUTUBE</a>
+        </div>
+        <div class="developer-terminal">
+          <b>IDENTITY TRACE</b>
+          <span>&gt; handle: marsdevgod</span>
+          <span>&gt; role: developer / visual operator</span>
+          <span>&gt; status: connected to TEAM VAC signal map</span>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 const copy = {
   en: {
     gateTitle: "TEAM VAC OS",
@@ -166,11 +196,16 @@ const copy = {
     wishlist: "ADD TO WISHLIST",
     hint1: "Click the PON node",
     hint2: "Or type a tag in search",
-    mars:  { title: "DEVELOPER_MARS",  body: "[ DATA ENCRYPTED ]" },
+    mars:  {
+      title: "DEVELOPER_MARS",
+      html: marsHtml,
+      panelClass: "panel-body--developer",
+    },
     devci: { title: "DEVELOPER_DEVCI", body: "[ DATA ENCRYPTED ]" },
     publisher: {
       title: "PUBLISHER / SPAGHETTI CAT",
       html: publisherHtml,
+      panelClass: "panel-body--publisher",
     },
     faq:   { title: "FAQ",             body: "[ DATA ENCRYPTED ]" },
     about: { title: "ABOUT_TEAM",      body: "Team VAC - Void Analytics Core" },
@@ -185,11 +220,16 @@ const copy = {
     wishlist: "ДОБАВИТЬ В СПИСОК ЖЕЛАЕМОГО",
     hint1: "Кликнуть по узлу PON",
     hint2: "Или ввести тег в поиск",
-    mars:  { title: "DEVELOPER_MARS",  body: "[ ДАННЫЕ ЗАШИФРОВАНЫ ]" },
+    mars:  {
+      title: "DEVELOPER_MARS",
+      html: marsHtml,
+      panelClass: "panel-body--developer",
+    },
     devci: { title: "DEVELOPER_DEVCI", body: "[ ДАННЫЕ ЗАШИФРОВАНЫ ]" },
     publisher: {
       title: "PUBLISHER / SPAGHETTI CAT",
       html: publisherHtml,
+      panelClass: "panel-body--publisher",
     },
     faq:   { title: "FAQ",             body: "[ ДАННЫЕ ЗАШИФРОВАНЫ ]" },
     about: { title: "ABOUT_TEAM",      body: "[ ДАННЫЕ ЗАШИФРОВАНЫ ]" },
@@ -482,7 +522,8 @@ function refreshPanelText() {
   const entry = key && copy[activeLang][key];
   if (!entry) return;
   panelTitle.textContent = entry.title;
-  panelBody.classList.toggle("panel-body--publisher", Boolean(entry.html));
+  panelBody.className = "panel-body";
+  if (entry.panelClass) panelBody.classList.add(entry.panelClass);
   if (entry.html) {
     panelBody.innerHTML = typeof entry.html === "function" ? entry.html() : entry.html;
   } else {
