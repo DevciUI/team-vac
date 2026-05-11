@@ -28,12 +28,15 @@ const URL_STEAM = "https://store.steampowered.com/app/3864580/PON/";
 const URL_DISCORD = "https://discord.com/invite/KUwMKcFucr";
 const URL_YOUTUBE = "https://www.youtube.com/@steampon";
 const URL_TIKTOK = "https://www.tiktok.com/@devci__";
-const URL_INSTAGRAM = "https://www.instagram.com/marsdevgod/";
+const URL_INSTAGRAM = "https://www.instagram.com/devci_inc/";
 const URL_PUBLISHER_SITE = "https://spaghetticat.io/";
 const URL_PUBLISHER_STEAM = "https://store.steampowered.com/curator/46103900";
 const URL_MARS_INSTAGRAM = "https://www.instagram.com/marsdevgod/";
 const URL_MARS_TIKTOK = "https://www.tiktok.com/@marsdevgod";
 const URL_MARS_YOUTUBE = "https://www.youtube.com/@marsdevgod";
+const URL_DEVCI_INSTAGRAM = "https://www.instagram.com/devci_inc/";
+const URL_DEVCI_TIKTOK = "https://www.tiktok.com/@devci__";
+const URL_DEVCI_YOUTUBE = "https://www.youtube.com/@Devci";
 
 const NODE_BEHAVIOR = {
   PON:           { type: "gallery" },
@@ -185,6 +188,33 @@ function marsHtml() {
   `;
 }
 
+function devciHtml() {
+  return `
+    <div class="developer-dossier developer-dossier--devci">
+      <div class="developer-photo">
+        <img src="./assets/developers/devci.jpg" alt="Devci developer" loading="lazy" />
+        <div class="developer-photo-tag">CORE NODE / DEVCI</div>
+      </div>
+      <div class="developer-profile">
+        <span>[ VERIFIED TEAM NODE ]</span>
+        <h2>DEVELOPER DEVCI</h2>
+        <p>Primary creator signal for TEAM VAC OS and P.O.N. Social vector: devci.</p>
+        <div class="developer-actions">
+          <a href="${URL_DEVCI_INSTAGRAM}" target="_blank" rel="noopener noreferrer">INSTAGRAM</a>
+          <a href="${URL_DEVCI_TIKTOK}" target="_blank" rel="noopener noreferrer">TIKTOK</a>
+          <a href="${URL_DEVCI_YOUTUBE}" target="_blank" rel="noopener noreferrer">YOUTUBE</a>
+        </div>
+        <div class="developer-terminal">
+          <b>IDENTITY TRACE</b>
+          <span>&gt; handle: devci / devci_inc</span>
+          <span>&gt; role: developer / project operator</span>
+          <span>&gt; status: linked to TEAM VAC core</span>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 const copy = {
   en: {
     gateTitle: "TEAM VAC OS",
@@ -201,7 +231,11 @@ const copy = {
       html: marsHtml,
       panelClass: "panel-body--developer",
     },
-    devci: { title: "DEVELOPER_DEVCI", body: "[ DATA ENCRYPTED ]" },
+    devci: {
+      title: "DEVELOPER_DEVCI",
+      html: devciHtml,
+      panelClass: "panel-body--developer",
+    },
     publisher: {
       title: "PUBLISHER / SPAGHETTI CAT",
       html: publisherHtml,
@@ -225,7 +259,11 @@ const copy = {
       html: marsHtml,
       panelClass: "panel-body--developer",
     },
-    devci: { title: "DEVELOPER_DEVCI", body: "[ ДАННЫЕ ЗАШИФРОВАНЫ ]" },
+    devci: {
+      title: "DEVELOPER_DEVCI",
+      html: devciHtml,
+      panelClass: "panel-body--developer",
+    },
     publisher: {
       title: "PUBLISHER / SPAGHETTI CAT",
       html: publisherHtml,
