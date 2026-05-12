@@ -1,0 +1,208 @@
+:root {
+  color-scheme: dark;
+  --black: #030405;
+  --panel: #090b0d;
+  --white: #f2f2ee;
+  --muted: #81868c;
+  --red: #e9162f;
+  --line: #33383d;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+  margin: 0;
+  background: var(--black);
+  color: var(--white);
+  font-family: Consolas, "Courier New", monospace;
+}
+
+body {
+  background:
+    linear-gradient(rgba(255,255,255,.032) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.024) 1px, transparent 1px),
+    radial-gradient(circle at 78% 18%, rgba(233,22,47,.22), transparent 28%),
+    #030405;
+  background-size: 80px 56px, 80px 56px, auto, auto;
+}
+
+a {
+  color: var(--white);
+}
+
+.note-shell {
+  width: min(1180px, calc(100vw - 32px));
+  margin: 0 auto;
+  padding: 28px 0 44px;
+}
+
+.note-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  border-bottom: 2px solid var(--red);
+  padding-bottom: 18px;
+}
+
+.note-back {
+  border: 1px solid var(--red);
+  padding: 10px 14px;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 700;
+  background: rgba(233,22,47,.12);
+}
+
+.note-back:hover,
+.note-back:focus-visible {
+  background: var(--red);
+  color: var(--black);
+  outline: 0;
+}
+
+.note-eyebrow,
+.note-kv b,
+.note-panel h2,
+.ref-slot span {
+  color: var(--red);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .1em;
+}
+
+.note-title {
+  margin: 28px 0 16px;
+  font-size: clamp(38px, 7vw, 84px);
+  line-height: .86;
+}
+
+.note-lead {
+  max-width: 780px;
+  margin: 0 0 24px;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.note-progress {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 92px;
+  gap: 12px;
+  align-items: center;
+  border: 1px solid var(--line);
+  padding: 10px;
+  background: rgba(0,0,0,.55);
+}
+
+.note-progress-bar {
+  height: 42px;
+  border: 1px solid var(--line);
+  background:
+    repeating-linear-gradient(90deg, rgba(255,255,255,.13) 0 5px, transparent 5px 12px),
+    #050607;
+}
+
+.note-progress-bar i {
+  display: block;
+  width: calc(var(--progress) * 1%);
+  height: 100%;
+  background:
+    repeating-linear-gradient(90deg, rgba(0,0,0,.38) 0 6px, transparent 6px 13px),
+    var(--red);
+  box-shadow: 0 0 34px rgba(233,22,47,.45);
+}
+
+.note-progress strong {
+  color: var(--white);
+  font-size: 24px;
+  text-align: right;
+}
+
+.note-grid {
+  display: grid;
+  grid-template-columns: 1.15fr .85fr;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.note-panel {
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--red);
+  padding: 18px;
+  background:
+    repeating-linear-gradient(0deg, rgba(255,255,255,.026) 0 1px, transparent 1px 8px),
+    rgba(5,6,7,.74);
+}
+
+.note-panel h2 {
+  margin: 0 0 14px;
+}
+
+.note-panel ul {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--white);
+  line-height: 1.8;
+}
+
+.note-panel p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.note-kv {
+  display: grid;
+  gap: 10px;
+}
+
+.note-kv div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+  padding-bottom: 8px;
+}
+
+.ref-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.ref-slot {
+  min-height: 130px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px dashed rgba(242,242,238,.34);
+  padding: 12px;
+  background: rgba(0,0,0,.44);
+}
+
+.ref-slot em {
+  color: var(--muted);
+  font-style: normal;
+  font-size: 12px;
+}
+
+@media (max-width: 780px) {
+  .note-top {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .note-grid,
+  .ref-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .note-title {
+    font-size: 40px;
+  }
+}
